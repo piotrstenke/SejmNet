@@ -1,0 +1,49 @@
+<Project>
+
+  <PropertyGroup>
+
+    <OutputType>Library</OutputType>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <Nullable>enable</Nullable>
+    <LangVersion>11</LangVersion>
+    <PreferredUILang>en-US</PreferredUILang>
+    <NeutralLanguage>en</NeutralLanguage>
+    <OutputPath>..\..\bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
+    <BaseIntermediateOutputPath>..\..\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>..\..\obj\$(MSBuildProjectName)\</MSBuildProjectExtensionsPath>
+  
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(MSBuildProjectDirectoryNoRoot.Contains('src'))">
+    
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>$(BaseIntermediateOutputPath)$(MSBuildProjectName).xml</DocumentationFile>
+    <Authors>Piotr Stenke</Authors>
+    <Company>Piotr Stenke</Company>
+    <PackageId>$(MSBuildProjectName)</PackageId>
+    <Product>$(MSBuildProjectName)</Product>
+    <Copyright>Copyright (c) Piotr Stenke - 2023</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon></PackageIcon>
+    <PackageIconUrl></PackageIconUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <ProjectUrl></ProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <DebugType>pdbonly</DebugType>
+    <Deterministic>true</Deterministic>
+    
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(MsBuildProjectDirectoryNoRoot.Contains('src'))">
+
+   <!-- <None Include="" Pack="true" Visible="false" PackagePath="" />-->
+
+  </ItemGroup>
+
+</Project>
