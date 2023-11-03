@@ -18,7 +18,7 @@ namespace SejmNet.Models
 		/// </summary>
 		/// <remarks>Allowed values are: <c>[T, O, U, H, I]</c></remarks>
 		[JsonProperty("type")]
-		public required char TextType { get; init; }
+		public required char Type { get; init; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ActText"/> class.

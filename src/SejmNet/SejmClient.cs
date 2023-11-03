@@ -6,12 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace SejmNet
 {
-	/// <inheritdoc cref="ISejmEliClient"/>
+	/// <inheritdoc cref="ISejmClient"/>
 	public sealed class SejmClient : ISejmClient
 	{
 		/// <summary>
@@ -94,6 +93,108 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
+		public Term[] GetTerms()
+		{
+			return SendRequest_Array<Term>("sejm/term");
+		}
+
+		/// <inheritdoc/>
+		public Term? GetTerm(int number)
+		{
+			Validation.ValidateLessThan(number, 1);
+
+			Term? result = SendRequest<Term>($"sejm/term{number}");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public ParliamentMember[] GetMembers(int term)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			ParliamentMember[] result = SendRequest_Array<ParliamentMember>($"sejm/term{term}/MP");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public ParliamentMember? GetMember(int term, int id)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(id, 1);
+
+			ParliamentMember? result = SendRequest<ParliamentMember>($"sejm/term{term}/MP/{id}");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public byte[] GetMemberPhoto(int term, int id)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(id, 1);
+
+			byte[] result = SendRequest_RawBytes($"sejm/term{term}/MP/{id}/photo");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public byte[] GetMemberPhotoMini(int term, int id)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(id, 1);
+
+			byte[] result = SendRequest_RawBytes($"sejm/term{term}/MP/{id}/photo-mini");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Club[] GetClubs(int term)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			Club[] result = SendRequest_Array<Club>($"sejm/term{term}/clubs");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Club? GetClub(int term, string id)
+		{
+			Validation.ValidateLessThan(term, 1);
+			ArgumentException.ThrowIfNullOrEmpty(id);
+
+			Club? result = SendRequest<Club>($"sejm/term{term}/clubs/{id}");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public byte[] GetClubLogo(int term, string id)
+		{
+			Validation.ValidateLessThan(term, 1);
+			ArgumentException.ThrowIfNullOrEmpty(id);
+
+			byte[] result = SendRequest_RawBytes($"sejm/term{term}/clubs/{id}/logo");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Committee[] GetCommittees(int term)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			Committee[] result = SendRequest_Array<Committee>($"sejm/term{term}/committees");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Committee? GetCommittee(int term, string code)
+		{
+			Validation.ValidateLessThan(term, 1);
+			ArgumentException.ThrowIfNullOrEmpty(code);
+
+			Committee? result = SendRequest<Committee>($"sejm/term{term}/committees/{code}");
+			return result;
+		}
+
+		/// <inheritdoc/>
 		public PublishingHouse[] GetPublishers()
 		{
 			return SendRequest_Array<PublishingHouse>("eli/acts");
@@ -130,7 +231,7 @@ namespace SejmNet
 
 			Dictionary<string, ActHeaderReference[]>? result = SendRequest<Dictionary<string, ActHeaderReference[]>>($"eli/acts/{formattedCode}/{year}/{position}/references");
 
-			if(result is null)
+			if (result is null)
 			{
 				return new();
 			}
@@ -143,13 +244,13 @@ namespace SejmNet
 		{
 			ArgumentException.ThrowIfNullOrEmpty(publisherCode);
 
-			ValidatePublishYear(year);
+			Validation.ValidatePublishYear(year);
 
 			string formattedCode = FormatPublisherCode(publisherCode);
 
 			ResultList<ActHeader, ActResultQuery>? result = SendRequest<ResultList<ActHeader, ActResultQuery>>($"eli/acts/{formattedCode}/{year}");
 
-			if(result is null)
+			if (result is null)
 			{
 				return new ResultList<ActHeader, ActResultQuery>()
 				{
@@ -165,12 +266,8 @@ namespace SejmNet
 		{
 			ArgumentException.ThrowIfNullOrEmpty(publisherCode);
 
-			ValidatePublishYear(year);
-
-			if (volume < 1)
-			{
-				throw new ArgumentOutOfRangeException(nameof(volume), volume, $"Value cannot be less than 1");
-			}
+			Validation.ValidatePublishYear(year);
+			Validation.ValidateLessThan(volume, 1);
 
 			string formattedCode = FormatPublisherCode(publisherCode);
 
@@ -203,7 +300,7 @@ namespace SejmNet
 		{
 			ArgumentException.ThrowIfNullOrEmpty(publisherCode);
 
-			ValidatePublishYear(year);
+			Validation.ValidatePublishYear(year);
 
 			string formattedCode = FormatPublisherCode(publisherCode);
 
@@ -239,8 +336,8 @@ namespace SejmNet
 			string formattedCode = FormatPublisherCode(publisherCode);
 
 			string? content = SendRequest_RawText($"eli/acts/{formattedCode}/{year}/{position}/text.html");
-			
-			if(string.IsNullOrWhiteSpace(content))
+
+			if (string.IsNullOrWhiteSpace(content))
 			{
 				return string.Empty;
 			}
@@ -256,7 +353,7 @@ namespace SejmNet
 
 			string queryText = BuildSearchQuery(query);
 
-			if(string.IsNullOrEmpty(queryText))
+			if (string.IsNullOrEmpty(queryText))
 			{
 				return string.Empty;
 			}
@@ -280,13 +377,7 @@ namespace SejmNet
 
 			string formattedCode = FormatPublisherCode(publisherCode);
 
-			byte[]? content = SendRequest_RawBytes($"eli/acts/{formattedCode}/{year}/{position}/text.pdf");
-
-			if(content is null)
-			{
-				return Array.Empty<byte>();
-			}
-
+			byte[] content = SendRequest_RawBytes($"eli/acts/{formattedCode}/{year}/{position}/text.pdf");
 			return content;
 		}
 
@@ -299,13 +390,7 @@ namespace SejmNet
 
 			string formattedCode = FormatPublisherCode(publisherCode);
 
-			byte[]? content = SendRequest_RawBytes($"eli/acts/{formattedCode}/{year}/{position}/text/{textType}/{fileName}");
-
-			if (content is null)
-			{
-				return Array.Empty<byte>();
-			}
-
+			byte[] content = SendRequest_RawBytes($"eli/acts/{formattedCode}/{year}/{position}/text/{textType}/{fileName}");
 			return content;
 		}
 
@@ -351,12 +436,9 @@ namespace SejmNet
 		{
 			ArgumentException.ThrowIfNullOrEmpty(publisherCode);
 
-			ValidatePublishYear(year);
+			Validation.ValidatePublishYear(year);
 
-			if (position < 1)
-			{
-				throw new ArgumentOutOfRangeException(nameof(position), position, $"Value cannot be less than 1");
-			}
+			Validation.ValidateLessThan(position, 1);
 		}
 
 		private static string BuildSearchQuery(ActElementQuery query)
@@ -383,7 +465,7 @@ namespace SejmNet
 
 			void TryAppend(int value, string parameter)
 			{
-				if(value > 0)
+				if (value > 0)
 				{
 					sb.Append($"/{parameter}={value}");
 				}
@@ -411,7 +493,7 @@ namespace SejmNet
 			AddInt("offset", query.Volume);
 			AddInt("offset", query.Year);
 
-			AddString("type", query.ActType);
+			AddString("type", query.Type);
 			AddString("title", query.Title);
 			AddString("publisher", FormatPublisherCode(query.PublisherCode));
 
@@ -420,12 +502,12 @@ namespace SejmNet
 				sb.Append("exile=E&");
 			}
 
-			if(query.InForceOnly)
+			if (query.InForceOnly)
 			{
 				sb.Append("inForce=1&");
 			}
 
-			if(query.Keywords is not null && query.Keywords.Length > 0)
+			if (query.Keywords is not null && query.Keywords.Length > 0)
 			{
 				string keywords = string.Join(',', query.Keywords.Where(k => !string.IsNullOrWhiteSpace(k)));
 				sb.Append($"keyword={keywords}&");
@@ -440,7 +522,7 @@ namespace SejmNet
 
 			void AddDate(string parameterName, DateTime? date)
 			{
-				if(date.HasValue)
+				if (date.HasValue)
 				{
 					string formattedDate = FormatDate(date.Value);
 					sb.Append($"{parameterName}={formattedDate}&");
@@ -449,7 +531,7 @@ namespace SejmNet
 
 			void AddInt(string parameterName, int value)
 			{
-				if(value > 0)
+				if (value > 0)
 				{
 					sb.Append($"{parameterName}={value}&");
 				}
@@ -464,23 +546,10 @@ namespace SejmNet
 			}
 		}
 
-		private static string FormatDate(DateTime date)
-		{
-			return date.ToString(Constants.DateFormat);
-		}
-
-		internal static void ValidatePublishYear(int year, [CallerArgumentExpression(nameof(year))] string? parameterName = default)
-		{
-			if(year < Constants.MinPublishYear || year > Constants.MaxPublishYear)
-			{
-				throw new ArgumentOutOfRangeException(parameterName, year, $"Value is less than {Constants.MinPublishYear} or greater than {Constants.MaxPublishYear}");
-			}
-		}
-
 		[return: NotNullIfNotNull(nameof(publisherCode))]
 		private static string? FormatPublisherCode(string? publisherCode)
 		{
-			if(publisherCode is null)
+			if (publisherCode is null)
 			{
 				return null;
 			}
@@ -488,13 +557,18 @@ namespace SejmNet
 			return publisherCode.ToUpper();
 		}
 
-		private byte[]? SendRequest_RawBytes(string url)
+		private static string FormatDate(DateTime date)
+		{
+			return date.ToString(Constants.DateFormat);
+		}
+
+		private byte[] SendRequest_RawBytes(string url)
 		{
 			HttpResponseMessage response = HttpClient.GetAsync(url).Result;
 
 			if (!HandleStatusCode(response))
 			{
-				return null;
+				return Array.Empty<byte>();
 			}
 
 			byte[] content = response.Content.ReadAsByteArrayAsync().Result;

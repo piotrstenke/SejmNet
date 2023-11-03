@@ -94,7 +94,7 @@ namespace SejmNet.Models
 		/// Type of the act.
 		/// </summary>
 		[JsonProperty("type")]
-		public required string ActType { get; init; }
+		public required string Type { get; init; }
 
 		/// <summary>
 		/// Status of the act.

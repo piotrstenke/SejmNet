@@ -7,7 +7,7 @@ namespace SejmNet.Tests
 		[Fact]
 		public void TestActPdf()
 		{
-			SejmClient client = new SejmClient();
+			SejmClient client = new();
 
 			client.GetActElementPdf("DU", 2017, 2, 'O', "M19920240.pdf");
 

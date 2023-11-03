@@ -24,10 +24,7 @@ namespace SejmNet.Models
 			get => _limit;
 			init
 			{
-				if(value < 0)
-				{
-					throw new ArgumentOutOfRangeException(nameof(Limit), value, "Value is less than 0");
-				}
+				Validation.ValidateLessThan(value, 0, nameof(Limit));
 
 				_limit = value;
 			}
@@ -43,10 +40,7 @@ namespace SejmNet.Models
 			get => _offset;
 			init
 			{
-				if (value < 0)
-				{
-					throw new ArgumentOutOfRangeException(nameof(Offset), value, "Value is less than 0");
-				}
+				Validation.ValidateLessThan(value, 0, nameof(Offset));
 
 				_offset = value;
 			}
@@ -80,7 +74,7 @@ namespace SejmNet.Models
 			get => _year;
 			init
 			{
-				SejmClient.ValidatePublishYear(value, nameof(Year));
+				Validation.ValidatePublishYear(value, nameof(Year));
 
 				_year = value;
 			}
@@ -89,17 +83,14 @@ namespace SejmNet.Models
 		/// <summary>
 		/// Selected volume of publication.
 		/// </summary>
-		/// <exception cref="ArgumentOutOfRangeException">Value is less than <c>0</c>.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Value is less than <c>1</c>.</exception>
 		[JsonProperty("volume")]
 		public int Volume
 		{
 			get => _volume;
 			init
 			{
-				if(value < 0)
-				{
-					throw new ArgumentOutOfRangeException(nameof(Volume), value, "Value is less than 0");
-				}
+				Validation.ValidateLessThan(value, 1, nameof(Volume));
 
 				_volume = value;
 			}
@@ -108,17 +99,14 @@ namespace SejmNet.Models
 		/// <summary>
 		/// Selected position of publication.
 		/// </summary>
-		/// <exception cref="ArgumentOutOfRangeException">Value is less than <c>0</c>.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Value is less than <c>1</c>.</exception>
 		[JsonProperty("position")]
 		public int Position
 		{
 			get => _position;
 			init
 			{
-				if (value < 0)
-				{
-					throw new ArgumentOutOfRangeException(nameof(Position), value, "Value is less than 0");
-				}
+				Validation.ValidateLessThan(value, 1, nameof(Position));
 
 				_position = value;
 			}
@@ -134,7 +122,7 @@ namespace SejmNet.Models
 		/// Types of the act.
 		/// </summary>
 		[JsonProperty("type")]
-		public string? ActType { get; init; }
+		public string? Type { get; init; }
 
 		/// <summary>
 		/// Keywords to search for.

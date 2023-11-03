@@ -60,7 +60,7 @@ namespace SejmNet.Models
 		/// Types of acts to search for.
 		/// </summary>
 		[JsonProperty("type")]
-		public required string[] ActTypes { get; init; }
+		public required string[] Types { get; init; }
 
 		/// <summary>
 		/// Keywords to search for.

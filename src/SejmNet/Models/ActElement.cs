@@ -23,7 +23,7 @@ namespace SejmNet.Models
 		/// Type of the element.
 		/// </summary>
 		[JsonProperty("type")]
-		public required string ElementType { get; init; }
+		public required string Type { get; init; }
 
 		/// <summary>
 		/// Id of the element in relation to the parent element.
