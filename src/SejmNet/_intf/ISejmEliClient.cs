@@ -1,4 +1,5 @@
 ﻿using SejmNet.Models;
+using SejmNet.Models.Queries;
 using System;
 using System.Collections.Generic;
 
@@ -60,7 +61,7 @@ namespace SejmNet
 		/// <param name="year">Year the acts where published in.</param>
 		/// <exception cref="ArgumentException"><paramref name="publisherCode"/> is <see langword="null"/> or empty.</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="year"/> is less than <see cref="SejmClient.Constants.MinPublishYear"/> or greater than <see cref="SejmClient.Constants.MaxPublishYear"/>.</exception>
-		ResultList<ActHeader, ActResultQuery> GetActs(string publisherCode, int year);
+		ResultList<ActHeader, ActQueryResult> GetActs(string publisherCode, int year);
 
 		/// <summary>
 		/// Returns all acts published by a subject with the specified <paramref name="publisherCode"/> in the given <paramref name="year"/> and <paramref name="volume"/>.
@@ -71,7 +72,7 @@ namespace SejmNet
 		/// <exception cref="ArgumentException"><paramref name="publisherCode"/> is <see langword="null"/> or empty.</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="year"/> is less than <see cref="SejmClient.Constants.MinPublishYear"/> or greater than <see cref="SejmClient.Constants.MaxPublishYear"/>. -or-
 		/// <paramref name="volume"/> is less than <c>1</c>.</exception>
-		ResultList<ActHeader, ActResultQuery> GetActs(string publisherCode, int year, int volume);
+		ResultList<ActHeader, ActQueryResult> GetActs(string publisherCode, int year, int volume);
 
 		/// <summary>
 		/// Returns the structural contents of the legal act published by a subject with the specified <paramref name="publisherCode"/> in the given <paramref name="year"/> and at the given <paramref name="position"/>.
@@ -106,7 +107,7 @@ namespace SejmNet
 		/// <exception cref="ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="year"/> is less than <see cref="SejmClient.Constants.MinPublishYear"/> or greater than <see cref="SejmClient.Constants.MaxPublishYear"/>. -or-
 		/// <paramref name="position"/> is less than <c>1</c>.</exception>
-		string GetActElementHtml(string publisherCode, int year, int position, ActElementQuery query);
+		string GetActElementHtml(string publisherCode, int year, int position, ActElementSearchQuery query);
 
 		/// <summary>
 		/// Returns full contents of a legal act published by a subject with the specified <paramref name="publisherCode"/> in form of a PDF file.
@@ -146,7 +147,7 @@ namespace SejmNet
 		/// </summary>
 		/// <param name="query">Query used to search for acts.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
-		ResultList<Act, ActResultQuery> SearchActs(ActSearchQuery query);
+		ResultList<Act, ActQueryResult> SearchActs(ActSearchQuery query);
 
 		/// <summary>
 		/// Returns all existing types of legal acts.

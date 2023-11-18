@@ -6,7 +6,7 @@ namespace SejmNet.Models
 	/// <summary>
 	/// Represents a query that was executed when searching for acts.
 	/// </summary>
-	public sealed class ActResultQuery
+	public sealed class ActQueryResult
 	{
 		/// <summary>
 		/// Determines whether to include acts issued by the Polish autorities in exile.
@@ -129,9 +129,9 @@ namespace SejmNet.Models
 		public ResultComparator? ResultComparator { get; init; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ActResultQuery"/> class.
+		/// Initializes a new instance of the <see cref="ActQueryResult"/> class.
 		/// </summary>
-		public ActResultQuery()
+		public ActQueryResult()
 		{
 		}
 	}

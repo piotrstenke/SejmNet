@@ -1,4 +1,5 @@
 ﻿using SejmNet.Models;
+using SejmNet.Models.Queries;
 using System;
 
 namespace SejmNet
@@ -91,5 +92,43 @@ namespace SejmNet
 		/// <exception cref="ArgumentException"><paramref name="code"/> is <see langword="null"/> or empty.</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
 		Committee? GetCommittee(int term, string code);
+
+		/// <summary>
+		/// Returns a collection of interpellations that match the specified <paramref name="query"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="query">Query to search by.</param>
+		/// <remarks><b>NOTE:</b> By default, only <c>50</c> interpellations are returned.</remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
+		Interpellation[] GetInterpellations(int term, InterpellationSearchQuery? query = null);
+
+		/// <summary>
+		/// Returns an interpellation identified by the specified <paramref name="number"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="number">Number of interpellation to search for.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
+		/// <paramref name="number"/> is less than <c>1</c>.</exception>
+		Interpellation? GetInterpellation(int term, int number);
+
+		/// <summary>
+		/// Returns an interpellation identified by the specified <paramref name="number"/> in form of HTML text.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="number">Number of interpellation to search for.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
+		/// <paramref name="number"/> is less than <c>1</c>.</exception>
+		string GetInterpellationHtml(int term, int number);
+
+		/// <summary>
+		/// Returns a reply to an interpellation identified by the specified <paramref name="number"/> and <paramref name="key"/> in form of HTML text.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="number">Number of interpellation to search for.</param>
+		/// <param name="key">Key of interpellation reply to search for.</param>
+		/// <exception cref="ArgumentException"><paramref name="key"/> is <see langword="null"/> or empty.</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
+		/// <paramref name="number"/> is less than <c>1</c>.</exception>
+		string GetInterpellationReplyHtml(int term, int number, string key);
 	}
 }

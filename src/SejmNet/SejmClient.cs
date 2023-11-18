@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SejmNet.Models;
+using SejmNet.Models.Queries;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SejmNet
 {
@@ -46,7 +48,12 @@ namespace SejmNet
 			/// <summary>
 			/// Date format used by the client.
 			/// </summary>
-			public const string DateFormat = "yyyy-MM-dd";
+			public const string DateOnlyFormat = "yyyy-MM-dd";
+
+			/// <summary>
+			/// Date time format used by the client.
+			/// </summary>
+			public const string DateTimeFormat = "yyyy-MM-ddTHH-mm-ss";
 		}
 
 		/// <summary>
@@ -195,6 +202,65 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
+		public Interpellation[] GetInterpellations(int term, InterpellationSearchQuery? query = null)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			string url = $"sejm/term{term}/interpellations";
+
+			if(query is not null)
+			{
+				url += BuildSearchQuery(query);
+			}
+
+			Interpellation[] result = SendRequest_Array<Interpellation>(url);
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Interpellation? GetInterpellation(int term, int number)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(number, 1);
+
+			Interpellation? result = SendRequest<Interpellation>($"sejm/term{term}/interpellations/{number}");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public string GetInterpellationHtml(int term, int number)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(number, 1);
+
+			string? content = SendRequest_RawText($"sejm/term{term}/interpellations/{number}/body");
+
+			if (string.IsNullOrWhiteSpace(content))
+			{
+				return string.Empty;
+			}
+
+			return content;
+		}
+
+		/// <inheritdoc/>
+		public string GetInterpellationReplyHtml(int term, int number, string key)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(number, 1);
+			ArgumentException.ThrowIfNullOrEmpty(key);
+
+			string? content = SendRequest_RawText($"sejm/term{term}/interpellations/{number}/reply/{key}/body");
+
+			if (string.IsNullOrWhiteSpace(content))
+			{
+				return string.Empty;
+			}
+
+			return content;
+		}
+
+		/// <inheritdoc/>
 		public PublishingHouse[] GetPublishers()
 		{
 			return SendRequest_Array<PublishingHouse>("eli/acts");
@@ -240,7 +306,7 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
-		public ResultList<ActHeader, ActResultQuery> GetActs(string publisherCode, int year)
+		public ResultList<ActHeader, ActQueryResult> GetActs(string publisherCode, int year)
 		{
 			ArgumentException.ThrowIfNullOrEmpty(publisherCode);
 
@@ -248,11 +314,11 @@ namespace SejmNet
 
 			string formattedCode = FormatPublisherCode(publisherCode);
 
-			ResultList<ActHeader, ActResultQuery>? result = SendRequest<ResultList<ActHeader, ActResultQuery>>($"eli/acts/{formattedCode}/{year}");
+			ResultList<ActHeader, ActQueryResult>? result = SendRequest<ResultList<ActHeader, ActQueryResult>>($"eli/acts/{formattedCode}/{year}");
 
 			if (result is null)
 			{
-				return new ResultList<ActHeader, ActResultQuery>()
+				return new ResultList<ActHeader, ActQueryResult>()
 				{
 					Items = Array.Empty<ActHeader>(),
 				};
@@ -262,7 +328,7 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
-		public ResultList<ActHeader, ActResultQuery> GetActs(string publisherCode, int year, int volume)
+		public ResultList<ActHeader, ActQueryResult> GetActs(string publisherCode, int year, int volume)
 		{
 			ArgumentException.ThrowIfNullOrEmpty(publisherCode);
 
@@ -271,11 +337,11 @@ namespace SejmNet
 
 			string formattedCode = FormatPublisherCode(publisherCode);
 
-			ResultList<ActHeader, ActResultQuery>? result = SendRequest<ResultList<ActHeader, ActResultQuery>>($"eli/acts/{formattedCode}/{year}/volumes/{volume}");
+			ResultList<ActHeader, ActQueryResult>? result = SendRequest<ResultList<ActHeader, ActQueryResult>>($"eli/acts/{formattedCode}/{year}/volumes/{volume}");
 
 			if (result is null)
 			{
-				return new ResultList<ActHeader, ActResultQuery>()
+				return new ResultList<ActHeader, ActQueryResult>()
 				{
 					Items = Array.Empty<ActHeader>(),
 				};
@@ -309,17 +375,17 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
-		public ResultList<Act, ActResultQuery> SearchActs(ActSearchQuery query)
+		public ResultList<Act, ActQueryResult> SearchActs(ActSearchQuery query)
 		{
 			ArgumentNullException.ThrowIfNull(query);
 
 			string queryText = BuildSearchQuery(query);
 
-			ResultList<Act, ActResultQuery>? result = SendRequest<ResultList<Act, ActResultQuery>>("eli/acts/search" + queryText);
+			ResultList<Act, ActQueryResult>? result = SendRequest<ResultList<Act, ActQueryResult>>("eli/acts/search" + queryText);
 
 			if (result is null)
 			{
-				return new ResultList<Act, ActResultQuery>()
+				return new ResultList<Act, ActQueryResult>()
 				{
 					Items = Array.Empty<Act>(),
 				};
@@ -346,7 +412,7 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
-		public string GetActElementHtml(string publisherCode, int year, int position, ActElementQuery query)
+		public string GetActElementHtml(string publisherCode, int year, int position, ActElementSearchQuery query)
 		{
 			ArgumentNullException.ThrowIfNull(query);
 			ValidateActInput(publisherCode, year, position);
@@ -441,7 +507,62 @@ namespace SejmNet
 			Validation.ValidateLessThan(position, 1);
 		}
 
-		private static string BuildSearchQuery(ActElementQuery query)
+		private static string BuildSearchQuery(InterpellationSearchQuery query)
+		{
+			StringBuilder sb = new();
+			sb.Append('?');
+
+			if(query.From > 0)
+			{
+				AddParameter(sb, "from", query.From.ToString("000"));
+			}
+
+			AddParameter(sb, "limit", query.Limit);
+			AddParameter(sb, "offset", query.Offset);
+			AddParameter(sb, "modifiedSince", query.ModifiedSince, true);
+			AddParameter(sb, "since", query.SentSince);
+			AddParameter(sb, "till", query.SentTill);
+			AddParameter(sb, "title", query.Title);
+
+			// Not supported.
+			//AddParameter(sb, "to", query.To);
+
+			if(query.SortBy is not null)
+			{
+				sb.Append($"sort_by=");
+
+				if(query.SortBy.Order == SortOrder.Descending)
+				{
+					sb.Append('-');
+				}
+
+				switch (query.SortBy.Field)
+				{
+					case InterpellationSortField.Number:
+						sb.Append("num");
+						break;
+
+					case InterpellationSortField.SentDate:
+						sb.Append("sentDate");
+						break;
+
+					case InterpellationSortField.ReceiptDate:
+						sb.Append("receiptDate");
+						break;
+
+					case InterpellationSortField.LastModified:
+						sb.Append("lastModified");
+						break;
+
+					default:
+						goto case InterpellationSortField.Number;
+				}
+			}
+
+			return GetStringBuildText(sb);
+		}
+
+		private static string BuildSearchQuery(ActElementSearchQuery query)
 		{
 			StringBuilder sb = new();
 
@@ -477,25 +598,25 @@ namespace SejmNet
 			StringBuilder sb = new();
 			sb.Append('?');
 
-			AddDate("date", query.AnnouncementDate);
-			AddDate("dateFrom", query.AnnouncementDateFrom);
-			AddDate("dateTo", query.AnnouncementDateTo);
-			AddDate("dateEffect", query.EffectDate);
-			AddDate("dateEffectFrom", query.EffectDateFrom);
-			AddDate("dateEffectTo", query.EffectDateTo);
-			AddDate("pubDate", query.PromulgationDate);
-			AddDate("pubDateFrom", query.PromulgationDateFrom);
-			AddDate("pubDateTo", query.PromulgationDateTo);
+			AddParameter(sb, "date", query.AnnouncementDate);
+			AddParameter(sb, "dateFrom", query.AnnouncementDateFrom);
+			AddParameter(sb, "dateTo", query.AnnouncementDateTo);
+			AddParameter(sb, "dateEffect", query.EffectDate);
+			AddParameter(sb, "dateEffectFrom", query.EffectDateFrom);
+			AddParameter(sb, "dateEffectTo", query.EffectDateTo);
+			AddParameter(sb, "pubDate", query.PromulgationDate);
+			AddParameter(sb, "pubDateFrom", query.PromulgationDateFrom);
+			AddParameter(sb, "pubDateTo", query.PromulgationDateTo);
 
-			AddInt("limit", query.Limit);
-			AddInt("offset", query.Offset);
-			AddInt("offset", query.Position);
-			AddInt("offset", query.Volume);
-			AddInt("offset", query.Year);
+			AddParameter(sb, "limit", query.Limit);
+			AddParameter(sb, "offset", query.Offset);
+			AddParameter(sb, "position", query.Position);
+			AddParameter(sb, "volume", query.Volume);
+			AddParameter(sb, "year", query.Year);
 
-			AddString("type", query.Type);
-			AddString("title", query.Title);
-			AddString("publisher", FormatPublisherCode(query.PublisherCode));
+			AddParameter(sb, "type", query.Type);
+			AddParameter(sb, "title", query.Title);
+			AddParameter(sb, "publisher", FormatPublisherCode(query.PublisherCode));
 
 			if (query.InExile)
 			{
@@ -513,36 +634,46 @@ namespace SejmNet
 				sb.Append($"keyword={keywords}&");
 			}
 
+			return GetStringBuildText(sb);
+		}
+
+		private static string GetStringBuildText(StringBuilder sb)
+		{
 			if (sb[^1] is '&' or '?')
 			{
 				sb.Remove(sb.Length - 1, 1);
 			}
 
 			return sb.ToString();
+		}
 
-			void AddDate(string parameterName, DateTime? date)
+		private static void AddParameter(StringBuilder sb, string parameterName, DateTime? date, bool includeTime = false)
+		{
+			if (date.HasValue)
 			{
-				if (date.HasValue)
-				{
-					string formattedDate = FormatDate(date.Value);
-					sb.Append($"{parameterName}={formattedDate}&");
-				}
+				string format = includeTime
+					? Constants.DateTimeFormat
+					: Constants.DateOnlyFormat;
+
+				string formattedDate = date.Value.ToString(format);
+				sb.Append($"{parameterName}={formattedDate}&");
 			}
+		}
 
-			void AddInt(string parameterName, int value)
+		private static void AddParameter(StringBuilder sb, string parameterName, int value)
+		{
+			if (value > 0)
 			{
-				if (value > 0)
-				{
-					sb.Append($"{parameterName}={value}&");
-				}
+				sb.Append($"{parameterName}={value}&");
 			}
+		}
 
-			void AddString(string parameterName, string? value)
+		private static void AddParameter(StringBuilder sb, string parameterName, string? value)
+		{
+			if (!string.IsNullOrWhiteSpace(value))
 			{
-				if (!string.IsNullOrWhiteSpace(value))
-				{
-					sb.Append($"{parameterName}={value}&");
-				}
+				string val = Uri.EscapeDataString(value);
+				sb.Append($"{parameterName}={val}&");
 			}
 		}
 
@@ -555,11 +686,6 @@ namespace SejmNet
 			}
 
 			return publisherCode.ToUpper();
-		}
-
-		private static string FormatDate(DateTime date)
-		{
-			return date.ToString(Constants.DateFormat);
 		}
 
 		private byte[] SendRequest_RawBytes(string url)

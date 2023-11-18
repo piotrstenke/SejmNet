@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace SejmNet.Models
 {
@@ -13,19 +13,19 @@ namespace SejmNet.Models
 		/// <summary>
 		/// It is unknown if the act is in force.
 		/// </summary>
-		[Description("UNKNOWN")]
+		[EnumMember(Value = "UNKNOWN")]
 		Unknown = 0,
 
 		/// <summary>
 		/// The act is in force.
 		/// </summary>
-		[Description("IN_FORCE")]
+		[EnumMember(Value = "IN_FORCE")]
 		InForce = 1,
 
 		/// <summary>
 		/// The act is not in force.
 		/// </summary>
-		[Description("NOT_IN_FORCE")]
+		[EnumMember(Value = "NOT_IN_FORCE")]
 		NotInForce = 2
 	}
 }

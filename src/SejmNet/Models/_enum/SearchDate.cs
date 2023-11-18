@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace SejmNet.Models
 {
@@ -13,31 +13,31 @@ namespace SejmNet.Models
 		/// <summary>
 		/// No search date specified.
 		/// </summary>
-		[Description("NONE")]
+		[EnumMember(Value = "NONE")]
 		None = 0,
 
 		/// <summary>
 		/// The date must be the same as this date.
 		/// </summary>
-		[Description("ON_DAY")]
+		[EnumMember(Value = "ON_DAY")]
 		OnDay = 1,
 
 		/// <summary>
 		/// The date must be before this date.
 		/// </summary>
-		[Description("BEFORE")]
+		[EnumMember(Value = "BEFORE")]
 		Before = 2,
 
 		/// <summary>
 		/// The date must be after this date.
 		/// </summary>
-		[Description("AFTER")]
+		[EnumMember(Value = "AFTER")]
 		After = 3,
 
 		/// <summary>
 		/// The date must be between two dates.
 		/// </summary>
-		[Description("BETWEEN")]
+		[EnumMember(Value = "BETWEEN")]
 		Between = 4
 	}
 }

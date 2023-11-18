@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace SejmNet.Models
+namespace SejmNet.Models.Queries
 {
 	/// <summary>
 	/// Represents a query for searching acts.
@@ -83,14 +83,14 @@ namespace SejmNet.Models
 		/// <summary>
 		/// Selected volume of publication.
 		/// </summary>
-		/// <exception cref="ArgumentOutOfRangeException">Value is less than <c>1</c>.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Value is less than <c>0</c>.</exception>
 		[JsonProperty("volume")]
 		public int Volume
 		{
 			get => _volume;
 			init
 			{
-				Validation.ValidateLessThan(value, 1, nameof(Volume));
+				Validation.ValidateLessThan(value, 0, nameof(Volume));
 
 				_volume = value;
 			}
@@ -99,14 +99,14 @@ namespace SejmNet.Models
 		/// <summary>
 		/// Selected position of publication.
 		/// </summary>
-		/// <exception cref="ArgumentOutOfRangeException">Value is less than <c>1</c>.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Value is less than <c>0</c>.</exception>
 		[JsonProperty("position")]
 		public int Position
 		{
 			get => _position;
 			init
 			{
-				Validation.ValidateLessThan(value, 1, nameof(Position));
+				Validation.ValidateLessThan(value, 0, nameof(Position));
 
 				_position = value;
 			}
