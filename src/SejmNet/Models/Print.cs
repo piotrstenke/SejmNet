@@ -17,7 +17,7 @@ namespace SejmNet.Models
 		/// <summary>
 		/// Number associated with the print.
 		/// </summary>
-		[JsonProperty("num")]
+		[JsonProperty("number")]
 		public required int Number { get; init; }
 		
 		/// <summary>

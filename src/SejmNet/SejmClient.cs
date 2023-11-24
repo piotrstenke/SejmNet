@@ -279,13 +279,32 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
-		public byte[] GetPrintAttachment(int term, int number, string fileName)
+		public byte[] GetPrintAttachmentContent(int term, int number, string fileName)
 		{
 			Validation.ValidateLessThan(term, 1);
 			Validation.ValidateLessThan(number, 1);
 			ArgumentException.ThrowIfNullOrEmpty(fileName);
 
 			byte[] result = SendRequest_RawBytes($"sejm/term{term}/prints/{number}/{fileName}");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Proceeding[] GetProceedings(int term)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			Proceeding[] result = SendRequest_Array<Proceeding>($"sejm/term{term}/proceedings");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Proceeding? GetProceeding(int term, int number)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(number, 1);
+
+			Proceeding? result = SendRequest<Proceeding>($"sejm/term{term}/proceedings/{number}");
 			return result;
 		}
 

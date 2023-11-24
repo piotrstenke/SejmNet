@@ -137,7 +137,7 @@ namespace SejmNet
 		string GetInterpellationReplyHtml(int term, int number, string key);
 
 		/// <summary>
-		/// Returns all prints published during the specified <paramref name="term"/>.
+		/// Returns a collection of all prints published during the specified <paramref name="term"/>.
 		/// </summary>
 		/// <param name="term">Number of term to search for.</param>
 		/// <remarks><b>NOTE:</b> This method uses the <c>/prints</c> endpoint, which can be EXTREMALY slow. Using it can have serious performance consequences.</remarks>
@@ -162,6 +162,22 @@ namespace SejmNet
 		/// <exception cref="ArgumentException"><paramref name="fileName"/> is <see langword="null"/> or empty.</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
 		/// <paramref name="number"/> is less than <c>1</c>.</exception>
-		byte[] GetPrintAttachment(int term, int number, string fileName);
+		byte[] GetPrintAttachmentContent(int term, int number, string fileName);
+
+		/// <summary>
+		/// Returns a collection of all proceedings held during the specified <paramref name="term"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
+		Proceeding[] GetProceedings(int term);
+
+		/// <summary>
+		/// Returns a proceeding identified by the specified <paramref name="number"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="number">Number of proceeding to search for.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
+		/// <paramref name="number"/> is less than <c>1</c>.</exception>
+		Proceeding? GetProceeding(int term, int number);
 	}
 }
