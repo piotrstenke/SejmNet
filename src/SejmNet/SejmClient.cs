@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SejmNet
 {
@@ -258,6 +257,36 @@ namespace SejmNet
 			}
 
 			return content;
+		}
+
+		/// <inheritdoc/>
+		public Print[] GetPrints(int term)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			Print[] result = SendRequest_Array<Print>($"sejm/term{term}/prints");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Print? GetPrint(int term, int number)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(number, 1);
+
+			Print? result = SendRequest<Print>($"sejm/term{term}/prints/{number}");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public byte[] GetPrintAttachment(int term, int number, string fileName)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(number, 1);
+			ArgumentException.ThrowIfNullOrEmpty(fileName);
+
+			byte[] result = SendRequest_RawBytes($"sejm/term{term}/prints/{number}/{fileName}");
+			return result;
 		}
 
 		/// <inheritdoc/>

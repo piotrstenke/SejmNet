@@ -9,7 +9,7 @@ namespace SejmNet.Models
 	public sealed class Interpellation
 	{
 		/// <summary>
-		/// Number of the parliament term the interpellation is associated with.
+		/// Number of parliament term the interpellation is associated with.
 		/// </summary>
 		[JsonProperty("term")]
 		public required int Term { get; init; }

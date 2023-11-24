@@ -4,9 +4,9 @@ using System;
 namespace SejmNet.Models
 {
 	/// <summary>
-	/// Contains simplified information about prints.
+	/// Contains aggregated information about prints of a specific term.
 	/// </summary>
-	public sealed class PrintInfo
+	public sealed class PrintsInTerm
 	{
 		/// <summary>
 		/// Number of prints.
@@ -23,13 +23,13 @@ namespace SejmNet.Models
 		/// <summary>
 		/// Link to the print endpoint.
 		/// </summary>
-		[JsonProperty("count")]
+		[JsonProperty("link")]
 		public required string Link { get; init; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="PrintInfo"/> class.
+		/// Initializes a new instance of the <see cref="PrintsInTerm"/> class.
 		/// </summary>
-		public PrintInfo()
+		public PrintsInTerm()
 		{
 		}
 	}

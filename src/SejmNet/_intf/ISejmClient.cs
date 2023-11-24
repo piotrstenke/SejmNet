@@ -2,6 +2,11 @@
 using SejmNet.Models.Queries;
 using System;
 
+// --- Actions, that seem broken and don't work properly:
+//
+// GET /sejm/term{term}/prints - GetPrints() - EXTREMALY low performance, the 'sort_by' parameter doesn't seem to work.
+//
+
 namespace SejmNet
 {
 	/// <summary>
@@ -130,5 +135,33 @@ namespace SejmNet
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
 		/// <paramref name="number"/> is less than <c>1</c>.</exception>
 		string GetInterpellationReplyHtml(int term, int number, string key);
+
+		/// <summary>
+		/// Returns all prints published during the specified <paramref name="term"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <remarks><b>NOTE:</b> This method uses the <c>/prints</c> endpoint, which can be EXTREMALY slow. Using it can have serious performance consequences.</remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
+		Print[] GetPrints(int term);
+
+		/// <summary>
+		/// Returns a print identified by the specified <paramref name="number"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="number">Number of print to search for.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
+		/// <paramref name="number"/> is less than <c>1</c>.</exception>
+		Print? GetPrint(int term, int number);
+
+		/// <summary>
+		/// Returns contents of a file with the given <paramref name="fileName"/> attached to a print identified by the specified <paramref name="number"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="number">Number of print to search for.</param>
+		/// <param name="fileName">Name of file to return the contents of.</param>
+		/// <exception cref="ArgumentException"><paramref name="fileName"/> is <see langword="null"/> or empty.</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
+		/// <paramref name="number"/> is less than <c>1</c>.</exception>
+		byte[] GetPrintAttachment(int term, int number, string fileName);
 	}
 }

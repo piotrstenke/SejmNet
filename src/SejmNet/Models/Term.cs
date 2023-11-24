@@ -36,7 +36,7 @@ namespace SejmNet.Models
 		/// Information about prints of this term.
 		/// </summary>
 		[JsonProperty("prints")]
-		public required PrintInfo Prints { get; init; }
+		public required PrintsInTerm Prints { get; init; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Term"/> class.
