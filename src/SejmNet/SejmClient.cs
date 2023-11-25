@@ -2,7 +2,6 @@
 using SejmNet.Models;
 using SejmNet.Models.Queries;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -11,7 +10,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SejmNet
 {
@@ -372,6 +370,65 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
+		public WrittenQuestion[] GetWrittenQuestions(int term, WrittenQuestionSearchQuery? query = null)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			string url = $"sejm/term{term}/writtenQuestions";
+
+			if (query is not null)
+			{
+				url += BuildSearchQuery(query);
+			}
+
+			WrittenQuestion[] result = SendRequest_Array<WrittenQuestion>(url);
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public WrittenQuestion? GetWrittenQuestion(int term, int number)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(number, 1);
+
+			WrittenQuestion? result = SendRequest<WrittenQuestion>($"sejm/term{term}/writtenQuestions/{number}");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public string GetWrittenQuestionHtml(int term, int number)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(number, 1);
+
+			string? content = SendRequest_RawText($"sejm/term{term}/writtenQuestions/{number}/body");
+
+			if (string.IsNullOrWhiteSpace(content))
+			{
+				return string.Empty;
+			}
+
+			return content;
+		}
+
+		/// <inheritdoc/>
+		public string GetWrittenQuestionReplyHtml(int term, int number, string key)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(number, 1);
+			ArgumentException.ThrowIfNullOrEmpty(key);
+
+			string? content = SendRequest_RawText($"sejm/term{term}/writtenQuestions/{number}/reply/{key}/body");
+
+			if (string.IsNullOrWhiteSpace(content))
+			{
+				return string.Empty;
+			}
+
+			return content;
+		}
+
+		/// <inheritdoc/>
 		public PublishingHouse[] GetPublishers()
 		{
 			return SendRequest_Array<PublishingHouse>("eli/acts");
@@ -632,6 +689,31 @@ namespace SejmNet
 
 			string? type = GetEnumMemberName(query.Type);
 			AddParameter(sb, "type", type);
+
+			return GetStringBuilderText(sb);
+		}
+
+		private static string BuildSearchQuery(WrittenQuestionSearchQuery query)
+		{
+			StringBuilder sb = new();
+			sb.Append('?');
+
+			if (query.From > 0)
+			{
+				AddParameter(sb, "from", query.From.ToString("000"));
+			}
+
+			AddParameter(sb, "limit", query.Limit);
+			AddParameter(sb, "offset", query.Offset);
+			AddParameter(sb, "modifiedSince", query.ModifiedSince, true);
+			AddParameter(sb, "since", query.SentSince);
+			AddParameter(sb, "till", query.SentTill);
+			AddParameter(sb, "title", query.Title);
+
+			// Not supported.
+			//AddParameter(sb, "to", query.To);
+
+			AddSortBy(sb, query.SortBy);
 
 			return GetStringBuilderText(sb);
 		}

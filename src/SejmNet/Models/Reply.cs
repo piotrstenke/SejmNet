@@ -4,9 +4,9 @@ using System;
 namespace SejmNet.Models
 {
 	/// <summary>
-	/// Represents a reply to a interperllation.
+	/// Represents a reply to an interperllation or a written question.
 	/// </summary>
-	public sealed class InterpellationReply
+	public sealed class Reply
 	{
 		/// <summary>
 		/// Identifier of the reply.
@@ -51,9 +51,9 @@ namespace SejmNet.Models
 		public Attachment[]? Attachments { get; init; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="InterpellationReply"/> class.
+		/// Initializes a new instance of the <see cref="Reply"/> class.
 		/// </summary>
-		public InterpellationReply()
+		public Reply()
 		{
 		}
 	}

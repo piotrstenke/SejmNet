@@ -4,30 +4,30 @@ using System;
 namespace SejmNet.Models
 {
 	/// <summary>
-	/// Represents an interpellation.
+	/// Represents a written question.
 	/// </summary>
-	public sealed class Interpellation
+	public sealed class WrittenQuestion
 	{
 		/// <summary>
-		/// Number of parliament term the interpellation is associated with.
+		/// Number of parliament term the question is associated with.
 		/// </summary>
 		[JsonProperty("term")]
 		public required int Term { get; init; }
 
 		/// <summary>
-		/// Number associated with the interpellation.
+		/// Number associated with the question.
 		/// </summary>
 		[JsonProperty("num")]
 		public required int Number { get; init; }
 
 		/// <summary>
-		/// Title of the interpellation.
+		/// Title of the question.
 		/// </summary>
 		[JsonProperty("title")]
 		public required string Title { get; init; }
 
 		/// <summary>
-		/// Date of receiption of the interpellation.
+		/// Date of receiption of the question.
 		/// </summary>
 		[JsonProperty("receiptDate")]
 		public required DateTime ReceiptDate { get; init; }
@@ -39,7 +39,7 @@ namespace SejmNet.Models
 		public required DateTime LastModified { get; init; }
 
 		/// <summary>
-		/// Links to HTML documents containing the text of the interpellation.
+		/// Links to HTML documents containing the text of the question.
 		/// </summary>
 		[JsonProperty("links")]
 		public required string[] Links { get; init; }
@@ -57,27 +57,21 @@ namespace SejmNet.Models
 		public required string[] To { get; init; }
 
 		/// <summary>
-		/// Date the interpellation was sent at.
+		/// Date the question was sent at.
 		/// </summary>
 		[JsonProperty("sentDate")]
 		public required DateTime SentDate { get; init; }
 
 		/// <summary>
-		/// List of replies to the interpellation.
+		/// List of replies to the question.
 		/// </summary>
 		[JsonProperty("replies")]
 		public required Reply[] Replies { get; init; }
 
 		/// <summary>
-		/// List of interpellations that were submitted after reciving unsatisfactory answer (request for additional explanations).
+		/// Initializes a new instance of the <see cref="WrittenQuestion"/> class.
 		/// </summary>
-		[JsonProperty("repeatedInterpellation")]
-		public string[]? RepeatedInterpellation { get; init; }
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Interpellation"/> class.
-		/// </summary>
-		public Interpellation()
+		public WrittenQuestion()
 		{
 		}
 	}
