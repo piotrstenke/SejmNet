@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SejmNet
 {
@@ -324,6 +325,16 @@ namespace SejmNet
 			ArgumentException.ThrowIfNullOrEmpty(printNumber);
 
 			LegislativeProcess? result = SendRequest<LegislativeProcess>($"sejm/term{term}/processes/{printNumber}");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Voting[] GetVotings(int term, int sitting)
+		{
+			Validation.ValidateLessThan(term, 1);
+			Validation.ValidateLessThan(sitting, 1);
+
+			Voting[] result = SendRequest_Array<Voting>($"sejm/term{term}/votings/{sitting}");
 			return result;
 		}
 

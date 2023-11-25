@@ -191,6 +191,17 @@ namespace SejmNet
 		/// </summary>
 		/// <param name="term">Number of term to search for.</param>
 		/// <param name="printNumber">Number of print to search for.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
+		/// <exception cref="ArgumentException"><paramref name="printNumber"/> is <see langword="null"/> or empty.</exception>
 		LegislativeProcess? GetProcess(int term, string printNumber);
+
+		/// <summary>
+		/// Returns information about all votings that took place during the specified <paramref name="sitting"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="sitting">Number of sitting to search for.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
+		/// <paramref name="term"/> is less than <c>1</c>.</exception>
+		Voting[] GetVotings(int term, int sitting);
 	}
 }
