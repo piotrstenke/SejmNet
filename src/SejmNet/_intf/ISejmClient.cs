@@ -203,5 +203,21 @@ namespace SejmNet
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
 		/// <paramref name="term"/> is less than <c>1</c>.</exception>
 		Voting[] GetVotings(int term, int sitting);
+
+		/// <summary>
+		/// Returns a collection of video transmissions that match the specified <paramref name="query"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="query">Query to search by.</param>
+		/// <remarks><b>NOTE:</b> By default, only <c>50</c> videos are returned.</remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
+		Video[] GetVideos(int term, VideoSearchQuery? query = null);
+
+		/// <summary>
+		/// Returns a collection of video transmissions that start today.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
+		Video[] GetVideosForToday(int term);
 	}
 }

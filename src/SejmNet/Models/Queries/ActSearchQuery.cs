@@ -31,7 +31,7 @@ namespace SejmNet.Models.Queries
 		}
 
 		/// <summary>
-		/// Index to start returning acts from.
+		/// Number of results to skip in the response.
 		/// </summary>
 		/// <exception cref="ArgumentOutOfRangeException">Value is less than <c>0</c>.</exception>
 		[JsonProperty("offset")]

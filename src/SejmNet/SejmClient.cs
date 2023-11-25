@@ -2,11 +2,14 @@
 using SejmNet.Models;
 using SejmNet.Models.Queries;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -41,9 +44,14 @@ namespace SejmNet
 			public const int MaxPublishYear = 9999;
 
 			/// <summary>
-			/// Maximal number of changed acts that can be returned by the API.
+			/// Max number of changed acts that can be returned by the API.
 			/// </summary>
 			public const int MaxChangedActs = 500;
+
+			/// <summary>
+			/// Max number of results returned from search endpoints.
+			/// </summary>
+			public const int MaxSearchResults = 50;
 
 			/// <summary>
 			/// Date format used by the client.
@@ -339,6 +347,31 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
+		public Video[] GetVideos(int term, VideoSearchQuery? query = null)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			string url = $"sejm/term{term}/videos";
+
+			if (query is not null)
+			{
+				url += BuildSearchQuery(query);
+			}
+
+			Video[] result = SendRequest_Array<Video>(url);
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public Video[] GetVideosForToday(int term)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			Video[] result = SendRequest_Array<Video>($"sejm/term{term}/videos/today");
+			return result;
+		}
+
+		/// <inheritdoc/>
 		public PublishingHouse[] GetPublishers()
 		{
 			return SendRequest_Array<PublishingHouse>("eli/acts");
@@ -585,6 +618,24 @@ namespace SejmNet
 			Validation.ValidateLessThan(position, 1);
 		}
 
+		private static string BuildSearchQuery(VideoSearchQuery query)
+		{
+			StringBuilder sb = new();
+			sb.Append('?');
+
+			AddParameter(sb, "limit", query.Limit);
+			AddParameter(sb, "offset", query.Offset);
+			AddParameter(sb, "comm", query.CommitteeCode);
+			AddParameter(sb, "since", query.SinceDate);
+			AddParameter(sb, "till", query.TillDate);
+			AddParameter(sb, "title", query.Title);
+
+			string? type = GetEnumMemberName(query.Type);
+			AddParameter(sb, "type", type);
+
+			return GetStringBuilderText(sb);
+		}
+
 		private static string BuildSearchQuery(InterpellationSearchQuery query)
 		{
 			StringBuilder sb = new();
@@ -605,39 +656,9 @@ namespace SejmNet
 			// Not supported.
 			//AddParameter(sb, "to", query.To);
 
-			if(query.SortBy is not null)
-			{
-				sb.Append($"sort_by=");
+			AddSortBy(sb, query.SortBy);
 
-				if(query.SortBy.Order == SortOrder.Descending)
-				{
-					sb.Append('-');
-				}
-
-				switch (query.SortBy.Field)
-				{
-					case InterpellationSortField.Number:
-						sb.Append("num");
-						break;
-
-					case InterpellationSortField.SentDate:
-						sb.Append("sentDate");
-						break;
-
-					case InterpellationSortField.ReceiptDate:
-						sb.Append("receiptDate");
-						break;
-
-					case InterpellationSortField.LastModified:
-						sb.Append("lastModified");
-						break;
-
-					default:
-						goto case InterpellationSortField.Number;
-				}
-			}
-
-			return GetStringBuildText(sb);
+			return GetStringBuilderText(sb);
 		}
 
 		private static string BuildSearchQuery(ActElementSearchQuery query)
@@ -712,10 +733,51 @@ namespace SejmNet
 				sb.Append($"keyword={keywords}&");
 			}
 
-			return GetStringBuildText(sb);
+			return GetStringBuilderText(sb);
 		}
 
-		private static string GetStringBuildText(StringBuilder sb)
+		private static void AddSortBy<T>(StringBuilder sb, SortBy<T>? sortBy) where T : struct, Enum
+		{
+			if(sortBy is null)
+			{
+				return;
+			}
+
+			string? fieldName = GetEnumMemberName(sortBy.Field);
+
+			if (string.IsNullOrWhiteSpace(fieldName))
+			{
+				return;
+			}
+
+			sb.Append($"sort_by=");
+
+			if (sortBy.Order == SortOrder.Descending)
+			{
+				sb.Append('-');
+			}
+
+			sb.Append(fieldName);
+		}
+
+		private static string? GetEnumMemberName<T>(T value) where T : struct, Enum
+		{
+			string name = value.ToString();
+			
+			if(typeof(T).GetField(name) is not FieldInfo field)
+			{
+				return null;
+			}
+
+			if(field.GetCustomAttribute<EnumMemberAttribute>() is not EnumMemberAttribute attr)
+			{
+				return null;
+			}
+
+			return attr.Value;
+		}
+
+		private static string GetStringBuilderText(StringBuilder sb)
 		{
 			if (sb[^1] is '&' or '?')
 			{
