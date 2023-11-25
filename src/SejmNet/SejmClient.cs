@@ -207,7 +207,7 @@ namespace SejmNet
 
 			string url = $"sejm/term{term}/interpellations";
 
-			if(query is not null)
+			if (query is not null)
 			{
 				url += BuildSearchQuery(query);
 			}
@@ -269,20 +269,20 @@ namespace SejmNet
 		}
 
 		/// <inheritdoc/>
-		public Print? GetPrint(int term, int number)
+		public Print? GetPrint(int term, string number)
 		{
 			Validation.ValidateLessThan(term, 1);
-			Validation.ValidateLessThan(number, 1);
+			ArgumentException.ThrowIfNullOrEmpty(number);
 
 			Print? result = SendRequest<Print>($"sejm/term{term}/prints/{number}");
 			return result;
 		}
 
 		/// <inheritdoc/>
-		public byte[] GetPrintAttachmentContent(int term, int number, string fileName)
+		public byte[] GetPrintAttachmentContent(int term, string number, string fileName)
 		{
 			Validation.ValidateLessThan(term, 1);
-			Validation.ValidateLessThan(number, 1);
+			ArgumentException.ThrowIfNullOrEmpty(number);
 			ArgumentException.ThrowIfNullOrEmpty(fileName);
 
 			byte[] result = SendRequest_RawBytes($"sejm/term{term}/prints/{number}/{fileName}");
@@ -305,6 +305,25 @@ namespace SejmNet
 			Validation.ValidateLessThan(number, 1);
 
 			Proceeding? result = SendRequest<Proceeding>($"sejm/term{term}/proceedings/{number}");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public LegislativeProcessHeader[] GetProcesses(int term)
+		{
+			Validation.ValidateLessThan(term, 1);
+
+			LegislativeProcessHeader[] result = SendRequest_Array<LegislativeProcessHeader>($"sejm/term{term}/processes");
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public LegislativeProcess? GetProcess(int term, string printNumber)
+		{
+			Validation.ValidateLessThan(term, 1);
+			ArgumentException.ThrowIfNullOrEmpty(printNumber);
+
+			LegislativeProcess? result = SendRequest<LegislativeProcess>($"sejm/term{term}/processes/{printNumber}");
 			return result;
 		}
 
@@ -751,7 +770,8 @@ namespace SejmNet
 
 		private string? SendRequest_RawText(string url)
 		{
-			HttpResponseMessage response = HttpClient.GetAsync(url).Result;
+			string formatted = Uri.EscapeDataString(url);
+			HttpResponseMessage response = HttpClient.GetAsync(formatted).Result;
 
 			if (!HandleStatusCode(response))
 			{

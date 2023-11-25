@@ -149,9 +149,9 @@ namespace SejmNet
 		/// </summary>
 		/// <param name="term">Number of term to search for.</param>
 		/// <param name="number">Number of print to search for.</param>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
-		/// <paramref name="number"/> is less than <c>1</c>.</exception>
-		Print? GetPrint(int term, int number);
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
+		/// <exception cref="ArgumentException"><paramref name="number"/> is <see langword="null"/> or empty.</exception>
+		Print? GetPrint(int term, string number);
 
 		/// <summary>
 		/// Returns contents of a file with the given <paramref name="fileName"/> attached to a print identified by the specified <paramref name="number"/>.
@@ -159,10 +159,9 @@ namespace SejmNet
 		/// <param name="term">Number of term to search for.</param>
 		/// <param name="number">Number of print to search for.</param>
 		/// <param name="fileName">Name of file to return the contents of.</param>
-		/// <exception cref="ArgumentException"><paramref name="fileName"/> is <see langword="null"/> or empty.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
-		/// <paramref name="number"/> is less than <c>1</c>.</exception>
-		byte[] GetPrintAttachmentContent(int term, int number, string fileName);
+		/// <exception cref="ArgumentException"><paramref name="fileName"/> is <see langword="null"/> or empty. -or- <paramref name="number"/> is <see langword="null"/> or empty.</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
+		byte[] GetPrintAttachmentContent(int term, string number, string fileName);
 
 		/// <summary>
 		/// Returns a collection of all proceedings held during the specified <paramref name="term"/>.
@@ -179,5 +178,19 @@ namespace SejmNet
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>. -or-
 		/// <paramref name="number"/> is less than <c>1</c>.</exception>
 		Proceeding? GetProceeding(int term, int number);
+
+		/// <summary>
+		/// Returns a collection of all legislative processes that took part during the specified <paramref name="term"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="term"/> is less than <c>1</c>.</exception>
+		LegislativeProcessHeader[] GetProcesses(int term);
+
+		/// <summary>
+		/// Returns information about legislative process of a print with the specified <paramref name="printNumber"/>.
+		/// </summary>
+		/// <param name="term">Number of term to search for.</param>
+		/// <param name="printNumber">Number of print to search for.</param>
+		LegislativeProcess? GetProcess(int term, string printNumber);
 	}
 }

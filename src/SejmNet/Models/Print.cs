@@ -18,13 +18,13 @@ namespace SejmNet.Models
 		/// Number associated with the print.
 		/// </summary>
 		[JsonProperty("number")]
-		public required int Number { get; init; }
+		public required string Number { get; init; }
 		
 		/// <summary>
 		/// List of associated prints.
 		/// </summary>
 		[JsonProperty("numberAssociated")]
-		public int[]? AssociatedPrints { get; init; }
+		public string[]? AssociatedPrints { get; init; }
 
 		/// <summary>
 		/// Title of the print.
@@ -54,7 +54,7 @@ namespace SejmNet.Models
 		/// List of prints that started a legislative process associated with the print.
 		/// </summary>
 		[JsonProperty("processPrint")]
-		public required int[] ProcessPrints { get; init; }
+		public required string[] ProcessPrints { get; init; }
 
 		/// <summary>
 		/// List of file names attached to the document.
