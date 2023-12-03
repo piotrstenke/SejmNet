@@ -16,10 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{0A52BDB2
 		LICENSE.txt = LICENSE.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E6FC7F1E-6532-4651-AE16-C2FE0A935DCF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SejmNet.Tests", "test\SejmNet.Tests\SejmNet.Tests.csproj", "{5E3BD548-EE41-4389-8D13-A7C2BAFD7D72}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,17 +26,12 @@ Global
 		{CF9D0911-55F3-41A4-85DD-3EDEBE216C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF9D0911-55F3-41A4-85DD-3EDEBE216C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF9D0911-55F3-41A4-85DD-3EDEBE216C61}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E3BD548-EE41-4389-8D13-A7C2BAFD7D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E3BD548-EE41-4389-8D13-A7C2BAFD7D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E3BD548-EE41-4389-8D13-A7C2BAFD7D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E3BD548-EE41-4389-8D13-A7C2BAFD7D72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CF9D0911-55F3-41A4-85DD-3EDEBE216C61} = {43AEA619-CC4A-4B23-B93C-FC397287F8FC}
-		{5E3BD548-EE41-4389-8D13-A7C2BAFD7D72} = {E6FC7F1E-6532-4651-AE16-C2FE0A935DCF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D5D5781-5E52-438F-8848-5D6C2DF7176B}
