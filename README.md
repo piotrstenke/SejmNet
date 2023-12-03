@@ -10,7 +10,9 @@
 	</a>
 </div>
 
-![Sejm logo](img/icons/logo-256.png?)
+<div align="center">
+	<img src="img/icons/logo-256.png" alt="Sejm logo"/>
+</div>
 
 # SejmNet
 
