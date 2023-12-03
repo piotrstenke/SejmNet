@@ -14,6 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{0A52BDB2
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
 		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{919CEA69-7C6B-48A1-B8E5-B9A5E1BBB727}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "icons", "icons", "{CBAD3665-0382-47E4-8904-DC7476D5ADAD}"
+	ProjectSection(SolutionItems) = preProject
+		img\icons\logo-128.png = img\icons\logo-128.png
+		img\icons\logo-256.png = img\icons\logo-256.png
 	EndProjectSection
 EndProject
 Global
@@ -32,6 +41,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CF9D0911-55F3-41A4-85DD-3EDEBE216C61} = {43AEA619-CC4A-4B23-B93C-FC397287F8FC}
+		{CBAD3665-0382-47E4-8904-DC7476D5ADAD} = {919CEA69-7C6B-48A1-B8E5-B9A5E1BBB727}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D5D5781-5E52-438F-8848-5D6C2DF7176B}

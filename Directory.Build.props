@@ -30,19 +30,19 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryType>git</RepositoryType>
-    <PackageIcon></PackageIcon>
-    <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl></RepositoryUrl>
-    <ProjectUrl></ProjectUrl>
+	<PackageIcon>logo-128.png</PackageIcon>
+	<PackageIconUrl>..\..\img\icons\logo-128.png</PackageIconUrl>
+	<RepositoryUrl>https://github.com/piotrstenke/SejmNet/tree/master</RepositoryUrl>
+	<ProjectUrl>https://github.com/piotrstenke/SejmNet/tree/master</ProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <DebugType>pdbonly</DebugType>
     <Deterministic>true</Deterministic>
-    
+
   </PropertyGroup>
 
   <ItemGroup Condition="$(MsBuildProjectDirectoryNoRoot.Contains('src'))">
 
-   <!-- <None Include="" Pack="true" Visible="false" PackagePath="" />-->
+    <None Include="..\..\img\icons\logo-128.png" Pack="true" Visible="false" PackagePath="" />
 
   </ItemGroup>
 

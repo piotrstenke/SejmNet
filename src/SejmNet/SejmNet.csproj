@@ -1,7 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
+    <Description>C# client library for the official API of the Parliament of the Republic of Poland (Sejm) available at api.sejm.gov.pl.</Description>
+    <PackageTags>Sejm;SejmNet;Parliament;Poland;Polish;Term;Eli;Api;Gov;Government;Client</PackageTags>
+    <PackageVersion>1.0.0</PackageVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <Version>1.0.0</Version>
     <Nullable>enable</Nullable>
 	<RootNamespace>SejmNet</RootNamespace>
   </PropertyGroup>
